@@ -10,7 +10,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>jpa</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>client</name>
+    <name>jpa</name>
 </project>

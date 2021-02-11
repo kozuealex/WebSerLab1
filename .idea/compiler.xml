@@ -6,17 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="client" />
         <module name="core" />
+        <module name="jpa" />
         <module name="plugin" />
         <module name="fileutils" />
         <module name="spi" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="client" target="15" />
       <module name="core" target="15" />
       <module name="fileutils" target="15" />
+      <module name="jpa" target="15" />
       <module name="plugin" target="15" />
       <module name="spi" target="15" />
       <module name="WebSerLab1" target="15" />

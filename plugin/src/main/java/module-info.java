@@ -1,8 +1,8 @@
-import x.serlab.plugin.ExternalPage;
-import x.serlab.plugin.SwedishPage;
-import x.serlab.spi.Page;
+import x.serlab.plugin.ProductsHandler;
+import x.serlab.spi.URLHandler;
 
 module plugin {
+    exports x.serlab.plugin;
     requires x.serlab.spi;
-    provides Page with ExternalPage, SwedishPage;
+    provides URLHandler with ProductsHandler;
 }

@@ -1,0 +1,4 @@
+--patch-module
+x.serlab.fileutils=_
+--add-reads
+x.serlab.fileutils=ALL-UNNAMED

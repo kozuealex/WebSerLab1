@@ -1,2 +1,3 @@
 module-info.class
 x\serlab\fileutils\FileReader.class
+x\serlab\fileutils\JsonConverter.class

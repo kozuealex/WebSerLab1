@@ -1,3 +1,2 @@
 module-info.class
-x\serlab\plugin\ExternalPage.class
-x\serlab\plugin\SwedishPage.class
+x\serlab\plugin\ProductsHandler.class

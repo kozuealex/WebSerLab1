@@ -1,11 +1,15 @@
 package x.serlab;
 
 import x.serlab.fileutils.FileReader;
+import x.serlab.plugin.ProductsHandler;
+import x.serlab.spi.URLHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,31 +41,40 @@ public class ServerExample {
 
             String url = readHeaders(input);
 
+            Map<String, URLHandler> routes = new HashMap<>();
+            routes.put("/products", new ProductsHandler());
+            var handler = routes.get(url);
+
             var output = new PrintWriter(socket.getOutputStream());
 
             File file = new File("web" + File.separator + url);
             byte[] page = FileReader.readFromFile(file);
 
-            // file.getPath().endsWith(".html");
             String contentType = Files.probeContentType(file.toPath());
 
-            if(!file.exists()) {
-                output.println("HTTP/1.1 404");
-                output.println("Content-Length:" + page.length);
+            if(handler != null) {
+                handler.handleURL();
+                output.println("HTTP/1.1 200 OK");
+                output.println("Content-Length:");
+                output.println("Content-Type: application/json");
+                output.println("");
                 output.flush();
 
-            } else {
-
+            } else if(file.exists()) {
                 output.println("HTTP/1.1 200 OK");
                 output.println("Content-Length:" + page.length);
                 output.println("Content-Type:" + contentType);
                 output.println("");
-                // output.print(Arrays.toString(page));
                 output.flush();
 
                 var dataOut = new BufferedOutputStream(socket.getOutputStream());
                 dataOut.write(page);
                 dataOut.flush();
+
+            } else {
+                output.println("HTTP/1.1 404");
+                output.println("Content-Length:" + page.length);
+                output.flush();
             }
             socket.close();
 
