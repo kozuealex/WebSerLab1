@@ -101,4 +101,4 @@ public class ServerExample {
 }
 
 
-// java -p "core-1.0-SNAPSHOT.jar;plugin-1.0-SNAPSHOT.jar;spi-1.0-SNAPSHOT.jar;fileutils-1.0-SNAPSHOT.jar" -m core/x.serlab.ServerExample
+// java -p "core-1.0-SNAPSHOT.jar;plugin-1.0-SNAPSHOT.jar;spi-1.0-SNAPSHOT.jar;fileutils-1.0-SNAPSHOT.jar;gson-2.8.6.jar" -m core/x.serlab.ServerExample
