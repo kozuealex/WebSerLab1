@@ -53,12 +53,16 @@ public class ServerExample {
             String contentType = Files.probeContentType(file.toPath());
 
             if(handler != null) {
-                handler.handleURL();
+                byte[] json = handler.handleURL().getBytes();
                 output.println("HTTP/1.1 200 OK");
-                output.println("Content-Length:");
+                output.println("Content-Length:" + json.length);
                 output.println("Content-Type: application/json");
                 output.println("");
                 output.flush();
+
+                var dataOut = new BufferedOutputStream(socket.getOutputStream());
+                dataOut.write(json);
+                dataOut.flush();
 
             } else if(file.exists()) {
                 output.println("HTTP/1.1 200 OK");
@@ -101,4 +105,4 @@ public class ServerExample {
 }
 
 
-// java -p "core-1.0-SNAPSHOT.jar;plugin-1.0-SNAPSHOT.jar;spi-1.0-SNAPSHOT.jar;fileutils-1.0-SNAPSHOT.jar;gson-2.8.6.jar" -m core/x.serlab.ServerExample
+// java -p "core-1.0-SNAPSHOT.jar;plugin-1.0-SNAPSHOT.jar;spi-1.0-SNAPSHOT.jar;fileutils-1.0-SNAPSHOT.jar;jpa-1.0-SNAPSHOT.jar;gson-2.8.6.jar" -m core/x.serlab.ServerExample
