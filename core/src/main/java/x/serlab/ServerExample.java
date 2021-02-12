@@ -38,6 +38,7 @@ public class ServerExample {
 
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            var output = new PrintWriter(socket.getOutputStream());
 
             String url = readHeaders(input);
 
@@ -45,11 +46,8 @@ public class ServerExample {
             routes.put("/products", new ProductsHandler());
             var handler = routes.get(url);
 
-            var output = new PrintWriter(socket.getOutputStream());
-
             File file = new File("web" + File.separator + url);
             byte[] page = FileReader.readFromFile(file);
-
             String contentType = Files.probeContentType(file.toPath());
 
             if(handler != null) {
@@ -80,11 +78,13 @@ public class ServerExample {
                 output.println("Content-Length:" + page.length);
                 output.flush();
             }
+
             socket.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private static String readHeaders(BufferedReader input) throws IOException {

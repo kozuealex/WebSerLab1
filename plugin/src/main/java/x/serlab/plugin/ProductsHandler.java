@@ -14,8 +14,8 @@ public class ProductsHandler implements URLHandler {
 
         List<Products> products = new ArrayList<>();
 
-        products.add(new Products(1, "Apple", false));
-        products.add(new Products(2, "Orange", false));
+        products.add(new Products(1, "Apple", 20));
+        products.add(new Products(2, "Orange", 25));
 
 
         JsonConverter converter = new JsonConverter();
