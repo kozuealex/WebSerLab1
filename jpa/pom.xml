@@ -17,8 +17,14 @@
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.4.10.Final</version>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.27.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>9.2.0.jre15</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 

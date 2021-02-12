@@ -22,7 +22,7 @@ public class ServerExample {
         try {
             ServerSocket serverSocket = new ServerSocket(5050);
 
-            while(true) {
+            while (true) {
                 Socket socket = serverSocket.accept();
                 executorService.execute(() -> handleConnection(socket));
             }
@@ -50,7 +50,9 @@ public class ServerExample {
             byte[] page = FileReader.readFromFile(file);
             String contentType = Files.probeContentType(file.toPath());
 
-            if(handler != null) {
+
+            if (handler != null) {
+
                 byte[] json = handler.handleURL().getBytes();
                 output.println("HTTP/1.1 200 OK");
                 output.println("Content-Length:" + json.length);
@@ -62,7 +64,7 @@ public class ServerExample {
                 dataOut.write(json);
                 dataOut.flush();
 
-            } else if(file.exists()) {
+            } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
                 output.println("Content-Length:" + page.length);
                 output.println("Content-Type:" + contentType);
@@ -89,13 +91,22 @@ public class ServerExample {
 
     private static String readHeaders(BufferedReader input) throws IOException {
         String requestedUrl = "";
-        while(true) {
+        while (true) {
             String headerLine = input.readLine();
-            if(headerLine.startsWith("GET")) {
+            if (headerLine.startsWith("GET")) {
+                requestedUrl = headerLine.split(" ")[1];
+            }
+
+            if (headerLine.startsWith("HEAD")) {
+                requestedUrl = headerLine.split(" ")[1];
+            }
+
+            if (headerLine.startsWith("POST")) {
                 requestedUrl = headerLine.split(" ")[1];
             }
             System.out.println(headerLine);
-            if(headerLine.isEmpty()) {
+
+            if (headerLine.isEmpty()) {
                 break;
             }
         }
