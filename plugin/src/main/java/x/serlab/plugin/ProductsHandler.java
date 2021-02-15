@@ -3,6 +3,8 @@ package x.serlab.plugin;
 import x.serlab.fileutils.JsonConverter;
 import x.serlab.jpa.Products;
 import x.serlab.spi.URLHandler;
+import x.serlab.jpa.DAO;
+import x.serlab.jpa.DAOImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +14,11 @@ public class ProductsHandler implements URLHandler {
     @Override
     public String handleURL() {
 
-        List<Products> products = new ArrayList<>();
+        List<Products> products;
+//        products.add(new Products(1, "Apple", 10));
 
-        products.add(new Products(1, "Apple", 20));
-        products.add(new Products(2, "Orange", 25));
-
+        DAO dao = new DAOImpl();
+        products = dao.findById(1);
 
         JsonConverter converter = new JsonConverter();
         var json = converter.convertToJson(products);

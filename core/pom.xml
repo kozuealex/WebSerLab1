@@ -35,7 +35,15 @@
                 <version>3.8.1</version>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>web</directory>
+                <targetPath>${project.build.directory}/web</targetPath>
+            </resource>
+        </resources>
     </build>
+
 
     <dependencies>
         <dependency>

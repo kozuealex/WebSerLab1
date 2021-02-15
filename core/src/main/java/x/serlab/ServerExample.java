@@ -7,6 +7,7 @@ import x.serlab.spi.URLHandler;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,17 +42,21 @@ public class ServerExample {
             var output = new PrintWriter(socket.getOutputStream());
 
             String url = readHeaders(input);
+//            String parameter = readParameter(input);
+//            String parameter2 = cutParameter(input);
 
-            Map<String, URLHandler> routes = new HashMap<>();
-            routes.put("/products", new ProductsHandler());
-            var handler = routes.get(url);
+//            Map<String, URLHandler> routes = new HashMap<>();
+//            routes.put("/products", new ProductsHandler());
+//            var handler = routes.get(url);
 
-            File file = new File("web" + File.separator + url);
+            File file = new File("core" + File.separator + "web" + File.separator + url);
             byte[] page = FileReader.readFromFile(file);
             String contentType = Files.probeContentType(file.toPath());
 
 
-            if (handler != null) {
+            if (url.equals("/products")) {
+
+                var handler = new ProductsHandler();
 
                 byte[] json = handler.handleURL().getBytes();
                 output.println("HTTP/1.1 200 OK");
@@ -63,6 +68,7 @@ public class ServerExample {
                 var dataOut = new BufferedOutputStream(socket.getOutputStream());
                 dataOut.write(json);
                 dataOut.flush();
+
 
             } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
@@ -113,6 +119,31 @@ public class ServerExample {
         return requestedUrl;
     }
 
+    private static String readParameter(BufferedReader input) throws IOException {
+        String parameter = "";
+        while (true) {
+            String headerLine = input.readLine();
+            if (headerLine.startsWith("GET")) {
+                parameter = headerLine.split("\\?")[1];
+            }
+            if (headerLine.isEmpty()) {
+                break;
+            }
+        }
+        return parameter;
+    }
+
+    private static String cutParameter(BufferedReader input) throws IOException {
+        String parameter = readParameter(input);
+        while (true) {
+            parameter = parameter.split("\\=")[1];
+
+            if (parameter.isEmpty()) {
+                break;
+            }
+        }
+        return parameter;
+    }
 }
 
 

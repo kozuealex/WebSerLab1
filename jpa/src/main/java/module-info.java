@@ -1,3 +1,6 @@
+import x.serlab.jpa.DAO;
+import x.serlab.jpa.DAOImpl;
+
 module x.serlab.jpa {
     requires java.sql;
     requires net.bytebuddy;
@@ -6,5 +9,5 @@ module x.serlab.jpa {
     requires java.persistence;
     exports x.serlab.jpa;
     opens x.serlab.jpa to com.google.gson, org.hibernate.orm.core;
-
+    provides DAO with DAOImpl;
 }
