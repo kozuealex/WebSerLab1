@@ -70,11 +70,11 @@ public class ServerExample {
             String contentType = Files.probeContentType(file.toPath());
 
 
-            byte[] body = input.readLine().getBytes();
 
             if (url.equals("/products")) {
 
                 ProductsHandler handler = new ProductsHandler();
+                byte[] body = input.readLine().getBytes();
 
                 if(body.length > 0) {
 
