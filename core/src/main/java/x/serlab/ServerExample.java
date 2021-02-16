@@ -38,7 +38,8 @@ public class ServerExample {
         System.out.println(Thread.currentThread());
 
         try {
-            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
+            // BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             var output = new PrintWriter(socket.getOutputStream());
 
@@ -61,44 +62,29 @@ public class ServerExample {
                 url = address;
             }
 
-//            Map<String, URLHandler> routes = new HashMap<>();
-//            routes.put("/products", new ProductsHandler());
-//            var handler = routes.get(url);
-
 
             File file = new File("core" + File.separator + "web" + File.separator + url);
             byte[] page = FileReader.readFromFile(file);
             String contentType = Files.probeContentType(file.toPath());
 
 
-
             if (url.equals("/products")) {
 
                 ProductsHandler handler = new ProductsHandler();
-//                byte[] body = input.readLine().getBytes();
-//
-//                if(body.length > 0) {
-//
-//                    String outputBody = new String(body, StandardCharsets.UTF_8);
-//                    System.out.println(outputBody);
-//
-//
-//                } else {
 
-                    handler.setIdNumber(idNumber);
+                handler.setIdNumber(idNumber);
 
-                    byte[] json = handler.handleURL().getBytes();
-                    output.println("HTTP/1.1 200 OK");
-                    output.println("Content-Length:" + json.length);
-                    output.println("Content-Type: application/json");
-                    output.println("");
-                    output.flush();
+                byte[] json = handler.handleURL().getBytes();
+                output.println("HTTP/1.1 200 OK");
+                output.println("Content-Length:" + json.length);
+                output.println("Content-Type: application/json");
+                output.println("");
+                output.flush();
 
-                    var dataOut = new BufferedOutputStream(socket.getOutputStream());
-                    dataOut.write(json);
-                    dataOut.flush();
+                var dataOut = new BufferedOutputStream(socket.getOutputStream());
+                dataOut.write(json);
+                dataOut.flush();
 
-                //}
 
             } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
@@ -125,12 +111,14 @@ public class ServerExample {
 
     }
 
-    private static String readHeaders(BufferedReader input) throws IOException {
+    private static String readHeaders(BufferedInputStream input) throws IOException {
         String requestedUrl = "";
         while (true) {
-            String headerLine = input.readLine();
+            String headerLine = readLine(input); // "(lo)(1)(2)"
+
             if (headerLine.startsWith("GET")) {
-                requestedUrl = headerLine.split(" ")[1];
+                requestedUrl = headerLine.split(" ")[1]; //  /products ? id=1
+                System.out.println("----------------------------");
             }
 
             if (headerLine.startsWith("HEAD")) {
@@ -138,7 +126,9 @@ public class ServerExample {
             }
 
             if (headerLine.startsWith("POST")) {
-                requestedUrl = headerLine.split(" ")[1];
+                //requestedUrl = headerLine.split(" ")[1];
+
+
             }
             System.out.println(headerLine);
 
@@ -157,11 +147,12 @@ public class ServerExample {
             buffer[bytesRead++] = (byte) inputStream.read();
             if (buffer[bytesRead - 1] == '\r') {
                 buffer[bytesRead++] = (byte) inputStream.read();
-                if( buffer[bytesRead - 1] == '\n')
+                if (buffer[bytesRead - 1] == '\n')
                     break;
             }
         }
-        return new String(buffer,0,bytesRead-2, StandardCharsets.UTF_8);
+        String s = new String(buffer, 0, bytesRead - 2, StandardCharsets.UTF_8);
+        return s.replaceAll("[^\\x00-\\x7F]", " ");
     }
 
 }

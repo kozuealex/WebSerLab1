@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class TestConverter {
+
     public static void main(String[] args) throws IOException {
+
         Gson gson = new Gson();
 
         Products products = new Products(4, "Juice", 20);
@@ -31,7 +33,6 @@ public class TestConverter {
         ObjectMapper mapper = new ObjectMapper();
         Products[] product = mapper.readValue(json, Products[].class);
         System.out.println(product);
-
 
     }
 }
