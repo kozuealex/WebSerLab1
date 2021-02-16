@@ -41,9 +41,24 @@ public class ServerExample {
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             var output = new PrintWriter(socket.getOutputStream());
 
-            String url = readHeaders(input);
-//            String parameter = readParameter(input);
-//            String parameter2 = cutParameter(input);
+            String address = readHeaders(input);
+            String url;
+            String query;
+            int idNumber = 2;
+
+            if (address.contains("?")) {
+                int position1 = address.indexOf("?");
+                System.out.println("position of '?' : " + position1);
+                url = address.substring(0,position1);
+                System.out.println("url :" + url);
+                query = address.substring(position1 + 1, address.length());
+                System.out.println("query :" + query);
+                int position2 = query.indexOf("=");
+                idNumber = Integer.parseInt(query.substring(position2 + 1, query.length()));
+            }
+            else {
+                url = address;
+            }
 
 //            Map<String, URLHandler> routes = new HashMap<>();
 //            routes.put("/products", new ProductsHandler());
@@ -56,7 +71,8 @@ public class ServerExample {
 
             if (url.equals("/products")) {
 
-                var handler = new ProductsHandler();
+                ProductsHandler handler = new ProductsHandler();
+                handler.setIdNumber(idNumber);
 
                 byte[] json = handler.handleURL().getBytes();
                 output.println("HTTP/1.1 200 OK");
@@ -119,32 +135,4 @@ public class ServerExample {
         return requestedUrl;
     }
 
-    private static String readParameter(BufferedReader input) throws IOException {
-        String parameter = "";
-        while (true) {
-            String headerLine = input.readLine();
-            if (headerLine.startsWith("GET")) {
-                parameter = headerLine.split("\\?")[1];
-            }
-            if (headerLine.isEmpty()) {
-                break;
-            }
-        }
-        return parameter;
-    }
-
-    private static String cutParameter(BufferedReader input) throws IOException {
-        String parameter = readParameter(input);
-        while (true) {
-            parameter = parameter.split("\\=")[1];
-
-            if (parameter.isEmpty()) {
-                break;
-            }
-        }
-        return parameter;
-    }
 }
-
-
-// java -p "core-1.0-SNAPSHOT.jar;plugin-1.0-SNAPSHOT.jar;spi-1.0-SNAPSHOT.jar;fileutils-1.0-SNAPSHOT.jar;jpa-1.0-SNAPSHOT.jar;gson-2.8.6.jar" -m core/x.serlab.ServerExample

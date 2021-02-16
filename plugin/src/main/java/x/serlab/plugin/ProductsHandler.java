@@ -11,14 +11,29 @@ import java.util.List;
 
 public class ProductsHandler implements URLHandler {
 
+    private int idNumber = 1;
+
+    public int getIdNumber() {
+        return this.idNumber;
+    }
+
+    public void setIdNumber(int idNumber) {
+        this.idNumber = idNumber;
+    }
+
     @Override
     public String handleURL() {
 
-        List<Products> products;
-//        products.add(new Products(1, "Apple", 10));
-
         DAO dao = new DAOImpl();
-        products = dao.findById(1);
+        List<Products> products;
+
+        if(idNumber > 0) {
+            products = dao.findById(idNumber);
+        } else {
+            products = dao.printAll();
+        }
+
+        System.out.println(products);
 
         JsonConverter converter = new JsonConverter();
         var json = converter.convertToJson(products);

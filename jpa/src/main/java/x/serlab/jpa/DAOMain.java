@@ -16,6 +16,6 @@ public class DAOMain {
 //        em.getTransaction().commit();
 
         DAO dao = new DAOImpl();
-        System.out.println(dao.findById(1));
+        System.out.println(dao.printAll());
     }
 }
