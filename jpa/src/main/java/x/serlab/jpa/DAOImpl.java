@@ -29,4 +29,12 @@ public class DAOImpl implements DAO {
         em.getTransaction().commit();
         return list;
     }
+
+    @Override
+    public void createNew(Products p) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(p);
+        em.getTransaction().commit();
+    }
 }

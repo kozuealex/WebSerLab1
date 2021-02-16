@@ -42,21 +42,21 @@ public class ServerExample {
             var output = new PrintWriter(socket.getOutputStream());
 
             String address = readHeaders(input);
+
             String url;
             String query;
-            int idNumber = 2;
+            int idNumber = 0;
 
             if (address.contains("?")) {
                 int position1 = address.indexOf("?");
-                System.out.println("position of '?' : " + position1);
-                url = address.substring(0,position1);
-                System.out.println("url :" + url);
+                System.out.println("position of '?': " + position1);
+                url = address.substring(0, position1);
+                System.out.println("url: " + url);
                 query = address.substring(position1 + 1, address.length());
-                System.out.println("query :" + query);
+                System.out.println("query: " + query);
                 int position2 = query.indexOf("=");
                 idNumber = Integer.parseInt(query.substring(position2 + 1, query.length()));
-            }
-            else {
+            } else {
                 url = address;
             }
 
@@ -64,27 +64,47 @@ public class ServerExample {
 //            routes.put("/products", new ProductsHandler());
 //            var handler = routes.get(url);
 
+
             File file = new File("core" + File.separator + "web" + File.separator + url);
             byte[] page = FileReader.readFromFile(file);
             String contentType = Files.probeContentType(file.toPath());
 
 
+            byte[] body = input.readLine().getBytes();
+
             if (url.equals("/products")) {
 
                 ProductsHandler handler = new ProductsHandler();
-                handler.setIdNumber(idNumber);
 
-                byte[] json = handler.handleURL().getBytes();
-                output.println("HTTP/1.1 200 OK");
-                output.println("Content-Length:" + json.length);
-                output.println("Content-Type: application/json");
-                output.println("");
-                output.flush();
+                if(body.length > 0) {
 
-                var dataOut = new BufferedOutputStream(socket.getOutputStream());
-                dataOut.write(json);
-                dataOut.flush();
+                    byte[] result = handler.handlePost(body.toString()).getBytes();
+                    output.println("HTTP/1.1 200 OK");
+                    output.println("Content-Length:" + result.length);
+                    output.println("Content-Type: application/json");
+                    output.println("");
+                    output.flush();
 
+                    var dataOut = new BufferedOutputStream(socket.getOutputStream());
+                    dataOut.write(result);
+                    dataOut.flush();
+
+                } else {
+
+                    handler.setIdNumber(idNumber);
+
+                    byte[] json = handler.handleURL().getBytes();
+                    output.println("HTTP/1.1 200 OK");
+                    output.println("Content-Length:" + json.length);
+                    output.println("Content-Type: application/json");
+                    output.println("");
+                    output.flush();
+
+                    var dataOut = new BufferedOutputStream(socket.getOutputStream());
+                    dataOut.write(json);
+                    dataOut.flush();
+
+                }
 
             } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
