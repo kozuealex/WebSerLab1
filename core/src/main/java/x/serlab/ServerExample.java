@@ -78,16 +78,9 @@ public class ServerExample {
 
                 if(body.length > 0) {
 
-                    byte[] result = handler.handlePost(body.toString()).getBytes();
-                    output.println("HTTP/1.1 200 OK");
-                    output.println("Content-Length:" + result.length);
-                    output.println("Content-Type: application/json");
-                    output.println("");
-                    output.flush();
+                    String outputBody = new String(body, StandardCharsets.UTF_8);
+                    System.out.println(outputBody);
 
-                    var dataOut = new BufferedOutputStream(socket.getOutputStream());
-                    dataOut.write(result);
-                    dataOut.flush();
 
                 } else {
 
