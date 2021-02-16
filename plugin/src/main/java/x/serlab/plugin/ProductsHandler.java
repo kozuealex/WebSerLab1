@@ -1,11 +1,13 @@
 package x.serlab.plugin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import x.serlab.fileutils.JsonConverter;
 import x.serlab.jpa.Products;
 import x.serlab.spi.URLHandler;
 import x.serlab.jpa.DAO;
 import x.serlab.jpa.DAOImpl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,20 +40,12 @@ public class ProductsHandler implements URLHandler {
     }
 
     @Override
-    public String handlePost(String body) {
+    public void handlePost(String body) throws IOException {
 
+        ObjectMapper mapper = new ObjectMapper();
+        Products product = mapper.readValue(body, Products.class);
         DAO dao = new DAOImpl();
-        JsonConverter converter = new JsonConverter();
-
-
-
-
-        List<Products> printProducts;
-        printProducts = dao.printAll();
-
-        var json = converter.convertToJson(printProducts);
-
-        return json;
+        dao.createNew(product);
 
     }
 }

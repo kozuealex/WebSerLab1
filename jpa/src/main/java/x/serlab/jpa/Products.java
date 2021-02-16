@@ -3,6 +3,7 @@ package x.serlab.jpa;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name="Products")

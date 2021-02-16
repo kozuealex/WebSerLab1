@@ -39,6 +39,7 @@ public class ServerExample {
 
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
             var output = new PrintWriter(socket.getOutputStream());
 
             String address = readHeaders(input);
@@ -74,15 +75,15 @@ public class ServerExample {
             if (url.equals("/products")) {
 
                 ProductsHandler handler = new ProductsHandler();
-                byte[] body = input.readLine().getBytes();
-
-                if(body.length > 0) {
-
-                    String outputBody = new String(body, StandardCharsets.UTF_8);
-                    System.out.println(outputBody);
-
-
-                } else {
+//                byte[] body = input.readLine().getBytes();
+//
+//                if(body.length > 0) {
+//
+//                    String outputBody = new String(body, StandardCharsets.UTF_8);
+//                    System.out.println(outputBody);
+//
+//
+//                } else {
 
                     handler.setIdNumber(idNumber);
 
@@ -97,7 +98,7 @@ public class ServerExample {
                     dataOut.write(json);
                     dataOut.flush();
 
-                }
+                //}
 
             } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
@@ -146,6 +147,21 @@ public class ServerExample {
             }
         }
         return requestedUrl;
+    }
+
+    public static String readLine(BufferedInputStream inputStream) throws IOException {
+        final int MAX_READ = 4096;
+        byte[] buffer = new byte[MAX_READ];
+        int bytesRead = 0;
+        while (bytesRead < MAX_READ) {
+            buffer[bytesRead++] = (byte) inputStream.read();
+            if (buffer[bytesRead - 1] == '\r') {
+                buffer[bytesRead++] = (byte) inputStream.read();
+                if( buffer[bytesRead - 1] == '\n')
+                    break;
+            }
+        }
+        return new String(buffer,0,bytesRead-2, StandardCharsets.UTF_8);
     }
 
 }

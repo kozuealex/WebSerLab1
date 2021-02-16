@@ -6,5 +6,6 @@ module plugin {
     requires x.serlab.spi;
     requires x.serlab.jpa;
     requires x.serlab.fileutils;
+    requires com.fasterxml.jackson.databind;
     provides URLHandler with ProductsHandler;
 }
