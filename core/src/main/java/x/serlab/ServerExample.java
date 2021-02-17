@@ -67,10 +67,9 @@ public class ServerExample {
             byte[] page = FileReader.readFromFile(file);
             String contentType = Files.probeContentType(file.toPath());
 
+            ProductsHandler handler = new ProductsHandler();
 
             if (url.equals("/products")) {
-
-                ProductsHandler handler = new ProductsHandler();
 
                 handler.setIdNumber(idNumber);
 
@@ -85,6 +84,23 @@ public class ServerExample {
                 dataOut.write(json);
                 dataOut.flush();
 
+            } else if (url.equals("post")) {
+
+                byte[] inputJson = input.readAllBytes();
+                String jsonString = new String(inputJson);
+                System.out.println(jsonString);
+
+                handler.handlePost(jsonString);
+
+//                output.println("HTTP/1.1 200 OK");
+//                output.println("Content-Length:" + inputJson.length);
+//                output.println("Content-Type: application/json");
+//                output.println("");
+//                output.flush();
+//
+//                var dataOut = new BufferedOutputStream(socket.getOutputStream());
+//                dataOut.write(inputJson);
+//                dataOut.flush();
 
             } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
@@ -115,20 +131,15 @@ public class ServerExample {
         String requestedUrl = "";
         while (true) {
             String headerLine = readLine(input); // "(lo)(1)(2)"
-
             if (headerLine.startsWith("GET")) {
                 requestedUrl = headerLine.split(" ")[1]; //  /products ? id=1
                 System.out.println("----------------------------");
             }
-
             if (headerLine.startsWith("HEAD")) {
                 requestedUrl = headerLine.split(" ")[1];
             }
-
             if (headerLine.startsWith("POST")) {
-                //requestedUrl = headerLine.split(" ")[1];
-
-
+                requestedUrl = "post";
             }
             System.out.println(headerLine);
 
