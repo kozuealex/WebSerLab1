@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface URLHandler {
     String handleURL();
-    void handlePost(String body) throws IOException;
+    String handlePost(String body) throws IOException;
 }

@@ -40,12 +40,19 @@ public class ProductsHandler implements URLHandler {
     }
 
     @Override
-    public void handlePost(String body) throws IOException {
+    public String handlePost(String body) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
         Products product = mapper.readValue(body, Products.class);
         DAO dao = new DAOImpl();
         dao.createNew(product);
 
+        List<Products> products = dao.printAll();
+        System.out.println(products);
+
+        JsonConverter converter = new JsonConverter();
+        var json = converter.convertToJson(products);
+
+        return json;
     }
 }

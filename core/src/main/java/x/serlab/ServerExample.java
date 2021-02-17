@@ -39,7 +39,6 @@ public class ServerExample {
 
         try {
             BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
-            // BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             var output = new PrintWriter(socket.getOutputStream());
 
@@ -48,6 +47,7 @@ public class ServerExample {
             String url;
             String query;
             int idNumber = 0;
+            int availableBytes = input.available();
 
             if (address.contains("?")) {
                 int position1 = address.indexOf("?");
@@ -69,6 +69,7 @@ public class ServerExample {
 
             ProductsHandler handler = new ProductsHandler();
 
+
             if (url.equals("/products")) {
 
                 handler.setIdNumber(idNumber);
@@ -86,21 +87,21 @@ public class ServerExample {
 
             } else if (url.equals("post")) {
 
-                byte[] inputJson = input.readAllBytes();
+                byte[] inputJson = input.readNBytes(availableBytes);
                 String jsonString = new String(inputJson);
                 System.out.println(jsonString);
 
-                handler.handlePost(jsonString);
+                byte[] outputJson = handler.handlePost(jsonString).getBytes();
 
-//                output.println("HTTP/1.1 200 OK");
-//                output.println("Content-Length:" + inputJson.length);
-//                output.println("Content-Type: application/json");
-//                output.println("");
-//                output.flush();
-//
-//                var dataOut = new BufferedOutputStream(socket.getOutputStream());
-//                dataOut.write(inputJson);
-//                dataOut.flush();
+                output.println("HTTP/1.1 200 OK");
+                output.println("Content-Length:" + outputJson.length);
+                output.println("Content-Type: application/json");
+                output.println("");
+                output.flush();
+
+                var dataOut = new BufferedOutputStream(socket.getOutputStream());
+                dataOut.write(outputJson);
+                dataOut.flush();
 
             } else if (file.exists()) {
                 output.println("HTTP/1.1 200 OK");
